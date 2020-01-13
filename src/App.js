@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import CardGrid from './components/CardGrid';
 
 const App = () => {
   const [data, setData] = useState({});
@@ -13,9 +14,7 @@ const App = () => {
   }, []);
 
   return (
-    <ul>
-      {products.map(product => <li key={product.sku}>{product.title}</li>)}
-    </ul>
+    <CardGrid products={products} />
   );
 };
 
