@@ -16,3 +16,15 @@ code {
   width: 80%;
   margin-top: 40px;
 }
+
+.cart-card {
+  padding: 20px;
+}
+
+.float-right {
+  float: right;
+}
+
+.background-white {
+  background-color: white;
+}

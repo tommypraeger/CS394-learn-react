@@ -12,29 +12,29 @@ const ProductCard = ({ product }) => {
           </Image.Container>
         </Card.Image>
         <Card.Content>
-            <Title size={6}>
-              {product.title}
-            </Title>
-            <p>
-              {product.description}
-            </p>
-            <p>
-              {`$${product.price}`}
-            </p>
-            <Button.Group>
-              <Button>
-                S
+          <Title size={6}>
+            {product.title}
+          </Title>
+          <p>
+            {product.description}
+          </p>
+          <p>
+            {`$${product.price}`}
+          </p>
+          <Button.Group>
+            <Button>
+              S
               </Button>
-              <Button>
-                M
+            <Button>
+              M
               </Button>
-              <Button>
-                L
+            <Button>
+              L
               </Button>
-              <Button>
-                XL
+            <Button>
+              XL
               </Button>
-            </Button.Group>
+          </Button.Group>
         </Card.Content>
       </Card>
     </Column>
