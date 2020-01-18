@@ -1,8 +1,8 @@
 import React from 'react';
 import 'rbx/index.css';
-import { Media, Image, Title, Content, Delete } from 'rbx';
+import { Media, Image, Title, Content, Button } from 'rbx';
 
-const CartCard = ({ product, qty, itemSize }) => {
+const CartCard = ({ product, qty, itemSize, removeFromCart }) => {
   return (
     <Media className="cart-card">
       <Media.Item as="figure" align="left">
@@ -30,7 +30,9 @@ const CartCard = ({ product, qty, itemSize }) => {
         </Content>
       </Media.Item>
       <Media.Item align="right">
-        <Delete />
+        <Button onClick={() => removeFromCart(product, itemSize)}>
+          -
+        </Button>
       </Media.Item>
     </Media>
   );

@@ -30,6 +30,23 @@ const App = () => {
     }
   };
 
+  const removeFromCart = (product, size) => {
+    const itemIndex = cartItems.findIndex(item => item.product === product && item.size === size);
+    const item = cartItems[itemIndex];
+    if (item.qty === 1) {
+      setCartItems([
+        ...cartItems.slice(0, itemIndex),
+        ...cartItems.slice(itemIndex + 1)
+      ]);
+    } else {
+      setCartItems([
+        ...cartItems.slice(0, itemIndex),
+        {product, size, qty: item.qty - 1},
+        ...cartItems.slice(itemIndex + 1)
+      ]);
+    }
+  };
+
   useEffect(() => {
     const fetchProducts = async () => {
       const response = await fetch('./data/products.json');
@@ -47,7 +64,7 @@ const App = () => {
           <ShoppingCart
             cartItems={cartItems}
             setCartOpen={setCartOpen}
-            setCartItems={setCartItems}
+            removeFromCart={removeFromCart}
           />
         }
         open={cartOpen}

@@ -3,19 +3,22 @@ import 'rbx/index.css';
 import { List, Button, Title } from 'rbx';
 import CartCard from './CartCard';
 
-const ShoppingCart = ({ cartItems, setCartOpen }) => {
+const ShoppingCart = ({ cartItems, setCartOpen, removeFromCart }) => {
   const priceReducer = (total, item) => total + (item.product.price * item.qty);
   const totalPrice = cartItems.reduce(priceReducer, 0);
   return (
     <React.Fragment>
-      <Button className="float-right" onClick={() => setCartOpen(false)}>
+      <Button onClick={() => setCartOpen(false)}>
         Hide cart
       </Button>
       <List>
-        {cartItems.map(item => <CartCard key={`${item.product.sku}_${item.size}`}
-          product={item.product}
-          qty={item.qty}
-          itemSize={item.size} />)
+        {cartItems.map(item => 
+          <CartCard key={`${item.product.sku}_${item.size}`}
+            product={item.product}
+            qty={item.qty}
+            itemSize={item.size}
+            removeFromCart={removeFromCart}
+          />)
         }
       </List>
       <Title className="centered">
