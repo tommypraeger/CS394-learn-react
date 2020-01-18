@@ -3,45 +3,12 @@ import 'rbx/index.css';
 import { List, Button, Title } from 'rbx';
 import CartCard from './CartCard';
 
-const testData = [
-  {
-    product: {
-      "sku": 12064273040195392,
-      "title": "Cat Tee Black T-Shirt",
-      "description": "4 MSL",
-      "style": "Black with custom print",
-      "price": 10.9,
-      "currencyId": "USD",
-      "currencyFormat": "$",
-      "isFreeShipping": true
-    },
-    qty: 2,
-    size: 'M'
-  },
-  {
-    product: {
-      "sku": 51498472915966370,
-      "title": "Dark Thug Blue-Navy T-Shirt",
-      "description": "",
-      "style": "Front print and paisley print",
-      "price": 29.45,
-      "currencyId": "USD",
-      "currencyFormat": "$",
-      "isFreeShipping": true
-    },
-    qty: 1,
-    size: 'S'
-  }
-];
-
-const ShoppingCart = ({ cartItems, setCartOpen, setCartItems }) => {
-  cartItems = testData;
+const ShoppingCart = ({ cartItems, setCartOpen }) => {
   const priceReducer = (total, item) => total + (item.product.price * item.qty);
   const totalPrice = cartItems.reduce(priceReducer, 0);
-  console.log(totalPrice);
   return (
     <React.Fragment>
-      <Button className="float-right">
+      <Button className="float-right" onClick={() => setCartOpen(false)}>
         Hide cart
       </Button>
       <List>
@@ -51,7 +18,7 @@ const ShoppingCart = ({ cartItems, setCartOpen, setCartItems }) => {
           itemSize={item.size} />)
         }
       </List>
-      <Title>
+      <Title className="centered">
         Total price: {`$${totalPrice}`}
       </Title>
     </React.Fragment>

@@ -2,7 +2,7 @@ import React from 'react';
 import 'rbx/index.css';
 import { Card, Image, Title, Column, Button } from 'rbx';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, setCartOpen, addToCart }) => {
   return (
     <Column size="one-quarter">
       <Card>
@@ -22,18 +22,30 @@ const ProductCard = ({ product }) => {
             {`$${product.price}`}
           </p>
           <Button.Group>
-            <Button>
+            <Button onClick={() => {
+              addToCart(product, 'S');
+              setCartOpen(true)
+            }}>
               S
-              </Button>
-            <Button>
+            </Button>
+            <Button onClick={() => {
+              addToCart(product, 'M');
+              setCartOpen(true)
+            }}>
               M
-              </Button>
-            <Button>
+            </Button>
+            <Button onClick={() => {
+              addToCart(product, 'L');
+              setCartOpen(true)
+            }}>
               L
-              </Button>
-            <Button>
+            </Button>
+            <Button onClick={() => {
+              addToCart(product, 'XL');
+              setCartOpen(true)
+            }}>
               XL
-              </Button>
+            </Button>
           </Button.Group>
         </Card.Content>
       </Card>

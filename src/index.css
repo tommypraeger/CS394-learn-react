@@ -28,3 +28,7 @@ code {
 .background-white {
   background-color: white;
 }
+
+.centered {
+  text-align: center;
+}
