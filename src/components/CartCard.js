@@ -16,7 +16,7 @@ const CartCard = ({ product, qty, itemSize, removeFromCart }) => {
             {product.title}
           </Title>
           <div>
-            Price: {`$${product.price}`}
+            Price: {`$${product.price.toFixed(2)}`}
           </div>
           <div>
             Quantity: {qty}
@@ -25,7 +25,7 @@ const CartCard = ({ product, qty, itemSize, removeFromCart }) => {
             Size: {itemSize}
           </div>
           <div>
-            Total price: {`$${product.price * qty}`}
+            Total price: {`$${(product.price * qty).toFixed(2)}`}
           </div>
         </Content>
       </Media.Item>

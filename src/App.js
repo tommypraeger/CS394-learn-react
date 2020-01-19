@@ -13,6 +13,8 @@ const App = () => {
 
   const [cartItems, setCartItems] = useState([]);
 
+  const [inventory, setInventory] = useState({});
+
   const addToCart = (product, size) => {
     const itemIndex = cartItems.findIndex(item => item.product === product && item.size === size);
     if (itemIndex >= 0) {
@@ -28,6 +30,7 @@ const App = () => {
         {product, size, qty: 1}
       ]);
     }
+    updateInventory(product, size, '-');
   };
 
   const removeFromCart = (product, size) => {
@@ -45,7 +48,27 @@ const App = () => {
         ...cartItems.slice(itemIndex + 1)
       ]);
     }
+    updateInventory(product, size, '+');
   };
+
+  const updateInventory = (product, size, action) => {
+    const newInventory = Object.assign({}, inventory);
+    if (action === '+') {
+      newInventory[product.sku][size] = inventory[product.sku][size] + 1;
+    } else {
+      newInventory[product.sku][size] = inventory[product.sku][size] - 1;
+    }
+    setInventory(newInventory);
+  };
+
+  useEffect(() => {
+    const fetchInventory = async () => {
+      const response = await fetch('./data/inventory.json');
+      const json = await response.json();
+      setInventory(json);
+    };
+    fetchInventory();
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -59,7 +82,7 @@ const App = () => {
   return (
     <React.Fragment>
       <Sidebar
-        styles={{sidebar: { backgroundColor: "white" }}}
+        styles={{sidebar: { backgroundColor: "white", position: "fixed" }}}
         sidebar={
           <ShoppingCart
             cartItems={cartItems}
@@ -78,6 +101,7 @@ const App = () => {
         products={products}
         setCartOpen={setCartOpen}
         addToCart={addToCart}
+        inventory={inventory}
       />
     </React.Fragment>
   );

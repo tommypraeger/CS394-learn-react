@@ -2,7 +2,45 @@ import React from 'react';
 import 'rbx/index.css';
 import { Card, Image, Title, Column, Button } from 'rbx';
 
-const ProductCard = ({ product, setCartOpen, addToCart }) => {
+const sizes = ['S', 'M', 'L', 'XL'];
+
+const SizeButton = ({ product, size, inventory, addToCart, setCartOpen }) => {
+  return (
+    <Button
+      disabled={inventory[product.sku][size] === 0}
+      onClick={() => {
+        addToCart(product, size);
+        setCartOpen(true)}
+      }
+    >
+      {size}
+    </Button>
+  )
+};
+
+const SizeButtons = ({ product, inventory, addToCart, setCartOpen }) => {
+  if (Object.values(inventory[product.sku]).filter(num => num > 0).length > 0) {
+    return (
+      <Button.Group>
+        {sizes.map(size => (
+          <SizeButton
+            key={size}
+            size={size}
+            product={product}
+            inventory={inventory}
+            addToCart={addToCart}
+            setCartOpen={setCartOpen}
+          />
+        ))}
+      </Button.Group>
+    );
+  }
+  return (
+    <p>Out of stock</p>
+  );
+};
+
+const ProductCard = ({ product, setCartOpen, addToCart, inventory }) => {
   return (
     <Column size="one-quarter">
       <Card>
@@ -19,34 +57,14 @@ const ProductCard = ({ product, setCartOpen, addToCart }) => {
             {product.description}
           </p>
           <p>
-            {`$${product.price}`}
+            {`$${product.price.toFixed(2)}`}
           </p>
-          <Button.Group>
-            <Button onClick={() => {
-              addToCart(product, 'S');
-              setCartOpen(true)
-            }}>
-              S
-            </Button>
-            <Button onClick={() => {
-              addToCart(product, 'M');
-              setCartOpen(true)
-            }}>
-              M
-            </Button>
-            <Button onClick={() => {
-              addToCart(product, 'L');
-              setCartOpen(true)
-            }}>
-              L
-            </Button>
-            <Button onClick={() => {
-              addToCart(product, 'XL');
-              setCartOpen(true)
-            }}>
-              XL
-            </Button>
-          </Button.Group>
+          <SizeButtons
+            product={product}
+            inventory={inventory}
+            addToCart={addToCart}
+            setCartOpen={setCartOpen}
+          />
         </Card.Content>
       </Card>
     </Column>
