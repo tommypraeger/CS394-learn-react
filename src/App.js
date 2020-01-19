@@ -4,6 +4,7 @@ import CardGrid from './components/CardGrid';
 import ShoppingCart from './components/ShoppingCart';
 import 'rbx/index.css';
 import { Button } from 'rbx';
+import { db } from './FirebaseHelpers'
 
 const App = () => {
   const [data, setData] = useState({});
@@ -58,16 +59,16 @@ const App = () => {
     } else {
       newInventory[product.sku][size] = inventory[product.sku][size] - 1;
     }
+    db.update(newInventory).catch(error => alert(error));
     setInventory(newInventory);
   };
 
   useEffect(() => {
-    const fetchInventory = async () => {
-      const response = await fetch('./data/inventory.json');
-      const json = await response.json();
-      setInventory(json);
+    const handleData = snap => {
+      if (snap.val()) setInventory(snap.val());
     };
-    fetchInventory();
+    db.on('value', handleData, error => alert(error));
+    return () => { db.off('value', handleData); };
   }, []);
 
   useEffect(() => {
@@ -93,7 +94,7 @@ const App = () => {
         open={cartOpen}
         pullRight={true}
       >
-        <Button className="float-right" onClick={()=>setCartOpen(true)}>
+        <Button className="float-right" onClick={() => setCartOpen(true)}>
           Show cart
         </Button>
       </Sidebar>

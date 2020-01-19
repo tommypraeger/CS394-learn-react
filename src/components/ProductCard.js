@@ -19,7 +19,8 @@ const SizeButton = ({ product, size, inventory, addToCart, setCartOpen }) => {
 };
 
 const SizeButtons = ({ product, inventory, addToCart, setCartOpen }) => {
-  if (Object.values(inventory[product.sku]).filter(num => num > 0).length > 0) {
+  if (Object.values(inventory).length 
+      && Object.values(inventory[product.sku]).filter(num => num > 0).length > 0) {
     return (
       <Button.Group>
         {sizes.map(size => (
