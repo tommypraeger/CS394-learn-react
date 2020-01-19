@@ -3,8 +3,9 @@ import Sidebar from "react-sidebar";
 import CardGrid from './components/CardGrid';
 import ShoppingCart from './components/ShoppingCart';
 import 'rbx/index.css';
-import { Button } from 'rbx';
-import { db } from './FirebaseHelpers'
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { db, NavBar } from './FirebaseHelpers'
 
 const App = () => {
   const [data, setData] = useState({});
@@ -15,6 +16,8 @@ const App = () => {
   const [cartItems, setCartItems] = useState([]);
 
   const [inventory, setInventory] = useState({});
+
+  const [user, setUser] = useState(undefined);
 
   const addToCart = (product, size) => {
     const itemIndex = cartItems.findIndex(item => item.product === product && item.size === size);
@@ -80,10 +83,14 @@ const App = () => {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(setUser);
+  }, []);
+
   return (
     <React.Fragment>
       <Sidebar
-        styles={{sidebar: { backgroundColor: "white", position: "fixed" }}}
+        styles={{sidebar: { backgroundColor: "white" }}}
         sidebar={
           <ShoppingCart
             cartItems={cartItems}
@@ -94,16 +101,14 @@ const App = () => {
         open={cartOpen}
         pullRight={true}
       >
-        <Button className="float-right" onClick={() => setCartOpen(true)}>
-          Show cart
-        </Button>
+        <NavBar user={user} setCartOpen={setCartOpen} />
+        <CardGrid
+          products={products}
+          setCartOpen={setCartOpen}
+          addToCart={addToCart}
+          inventory={inventory}
+        />
       </Sidebar>
-      <CardGrid
-        products={products}
-        setCartOpen={setCartOpen}
-        addToCart={addToCart}
-        inventory={inventory}
-      />
     </React.Fragment>
   );
 };
