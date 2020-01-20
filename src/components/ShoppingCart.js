@@ -3,7 +3,23 @@ import 'rbx/index.css';
 import { List, Button, Title } from 'rbx';
 import CartCard from './CartCard';
 
-const ShoppingCart = ({ cartItems, setCartOpen, removeFromCart }) => {
+const CheckOutButton = ({ user, emptyCart }) => {
+  if (user) {
+    return (
+      <Button.Group align="centered">
+        <Button onClick={emptyCart}>
+          Check out
+        </Button>
+      </Button.Group>
+    )
+  } else {
+    return (
+      <React.Fragment />
+    )
+  }
+};
+
+const ShoppingCart = ({ cartItems, setCartOpen, removeFromCart, emptyCart, user }) => {
   const priceReducer = (total, item) => total + (item.product.price * item.qty);
   const totalPrice = cartItems.reduce(priceReducer, 0).toFixed(2);
   return (
@@ -25,6 +41,7 @@ const ShoppingCart = ({ cartItems, setCartOpen, removeFromCart }) => {
       <Title className="centered">
         Total price: {`$${totalPrice}`}
       </Title>
+      <CheckOutButton user={user} emptyCart={emptyCart} />
     </React.Fragment>
   );
 }

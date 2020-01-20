@@ -5,7 +5,9 @@ import ShoppingCart from './components/ShoppingCart';
 import 'rbx/index.css';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { db, NavBar } from './FirebaseHelpers'
+import 'firebase/database';
+import { NavBar } from './FirebaseAuth';
+import { db } from './FirebaseConfig';
 
 const App = () => {
   const [data, setData] = useState({});
@@ -20,19 +22,25 @@ const App = () => {
   const [user, setUser] = useState(undefined);
 
   const addToCart = (product, size) => {
-    const itemIndex = cartItems.findIndex(item => item.product === product && item.size === size);
+    const itemIndex = cartItems.findIndex(item => item.product.sku === product.sku && item.size === size);
+    let updatedCartItems;
     if (itemIndex >= 0) {
       const item = cartItems[itemIndex];
-      setCartItems([
+      updatedCartItems = [
         ...cartItems.slice(0, itemIndex),
         {product, size, qty: item.qty + 1},
         ...cartItems.slice(itemIndex + 1)
-      ]);
+      ];
     } else {
-      setCartItems([
+      updatedCartItems = [
         ...cartItems,
         {product, size, qty: 1}
-      ]);
+      ];
+    }
+    setCartItems(updatedCartItems);
+    if (user) {
+      db.child('carts').child(user.uid).set(updatedCartItems)
+      .catch(error => alert(error));
     }
     updateInventory(product, size, '-');
   };
@@ -40,17 +48,23 @@ const App = () => {
   const removeFromCart = (product, size) => {
     const itemIndex = cartItems.findIndex(item => item.product === product && item.size === size);
     const item = cartItems[itemIndex];
+    let updatedCartItems;
     if (item.qty === 1) {
-      setCartItems([
+      updatedCartItems = [
         ...cartItems.slice(0, itemIndex),
         ...cartItems.slice(itemIndex + 1)
-      ]);
+      ];
     } else {
-      setCartItems([
+      updatedCartItems = [
         ...cartItems.slice(0, itemIndex),
         {product, size, qty: item.qty - 1},
         ...cartItems.slice(itemIndex + 1)
-      ]);
+      ];
+    }
+    setCartItems(updatedCartItems);
+    if (user) {
+      db.child('carts').child(user.uid).set(updatedCartItems)
+      .catch(error => alert(error));
     }
     updateInventory(product, size, '+');
   };
@@ -62,17 +76,29 @@ const App = () => {
     } else {
       newInventory[product.sku][size] = inventory[product.sku][size] - 1;
     }
-    db.update(newInventory).catch(error => alert(error));
+    db.child('inventory').set(newInventory).catch(error => alert(error));
     setInventory(newInventory);
+  };
+
+  const emptyCart = () => {
+    setCartItems([]);
+    db.child('carts').child(user.uid).set([])
+      .catch(error => alert(error));
   };
 
   useEffect(() => {
     const handleData = snap => {
-      if (snap.val()) setInventory(snap.val());
+      if (snap.val()) {
+        const data = snap.val();
+        setInventory(data.inventory);
+        if (user && data.carts[user.uid]) {
+          setCartItems(data.carts[user.uid]);
+        }
+      };
     };
     db.on('value', handleData, error => alert(error));
     return () => { db.off('value', handleData); };
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -96,6 +122,8 @@ const App = () => {
             cartItems={cartItems}
             setCartOpen={setCartOpen}
             removeFromCart={removeFromCart}
+            emptyCart={emptyCart}
+            user={user}
           />
         }
         open={cartOpen}
